@@ -1,6 +1,7 @@
 "use strict";
 var PatientPage;
 (function (PatientPage) {
+    const ready = HospitalAuth.guard("patient");
     const form = document.querySelector("#queue-form");
     const serviceSelect = document.querySelector("#queue-type");
     const prioritySelect = document.querySelector("#queue-priority");

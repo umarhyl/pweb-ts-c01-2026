@@ -1,6 +1,7 @@
 "use strict";
 var QueueScreenPage;
 (function (QueueScreenPage) {
+    const ready = HospitalAuth.guard("patient");
     const list = document.querySelector("#queue-list");
     const screen = document.querySelector("#queue-screen");
     const fullscreen = document.querySelector("#fullscreen-button");
@@ -114,10 +115,12 @@ var QueueScreenPage;
         if (fullscreen)
             fullscreen.textContent = document.fullscreenElement ? "Keluar Layar Penuh" : "Layar Penuh";
     });
-    render();
-    clock();
-    window.addEventListener("storage", render);
-    window.addEventListener("hospital-queue-change", render);
-    window.setInterval(render, 2500);
-    window.setInterval(clock, 1000);
+    if (ready) {
+        render();
+        clock();
+        window.addEventListener("storage", render);
+        window.addEventListener("hospital-queue-change", render);
+        window.setInterval(render, 2500);
+        window.setInterval(clock, 1000);
+    }
 })(QueueScreenPage || (QueueScreenPage = {}));

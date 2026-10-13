@@ -81,7 +81,7 @@ if (loginForm && loginButton && errorMessage && usernameInput && passwordInput) 
       localStorage.setItem("firstName", firstName);
 
       const destination = role === "admin" || role === "moderator"
-        ? "index.html" : "operator.html";
+        ? "index.html" : "ambil-antrian.html";
       window.location.href = destination;
     } catch (error) {
       const errorCode = error instanceof Error ? error.message : "";
