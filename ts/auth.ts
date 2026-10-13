@@ -1,13 +1,14 @@
 namespace HospitalAuth {
   export type Role = "admin" | "moderator" | "user";
 
-  export function guard(page: "dashboard" | "operator" | "patient"): boolean {
+  export function guard(page: "dashboard" | "operator" | "patient" | "screen"): boolean {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     const firstName = localStorage.getItem("firstName");
     const validRole = role === "admin" || role === "moderator" || role === "user";
     const staffPage = page === "dashboard" || page === "operator";
-    if (!token || !firstName || !validRole || (staffPage && role === "user")) {
+    const userPage = page === "patient";
+    if (!token || !firstName || !validRole || (staffPage && role === "user") || (userPage && role !== "user")) {
       window.location.replace("login.html");
       return false;
     }
@@ -20,7 +21,8 @@ namespace HospitalAuth {
       const currentRole = localStorage.getItem("role");
       if (!localStorage.getItem("token") || !localStorage.getItem("firstName")
         || (currentRole !== "admin" && currentRole !== "moderator" && currentRole !== "user")
-        || (staffPage && currentRole === "user")) {
+        || (staffPage && currentRole === "user")
+        || (userPage && currentRole !== "user")) {
         window.location.replace("login.html");
       }
     });

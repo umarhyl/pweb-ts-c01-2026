@@ -1,5 +1,6 @@
 namespace PatientPage {
   const ready = HospitalAuth.guard("patient");
+  if (ready) document.documentElement.dataset.auth = "ok";
   const form = document.querySelector<HTMLFormElement>("#queue-form");
   const serviceSelect = document.querySelector<HTMLSelectElement>("#queue-type");
   const prioritySelect = document.querySelector<HTMLSelectElement>("#queue-priority");

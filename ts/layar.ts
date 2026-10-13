@@ -1,5 +1,6 @@
 namespace QueueScreenPage {
-  const ready = HospitalAuth.guard("patient");
+  const ready = HospitalAuth.guard("screen");
+  if (ready) document.documentElement.dataset.auth = "ok";
   const list = document.querySelector<HTMLElement>("#queue-list");
   const screen = document.querySelector<HTMLElement>("#queue-screen");
   const fullscreen = document.querySelector<HTMLButtonElement>("#fullscreen-button");

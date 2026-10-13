@@ -1,7 +1,9 @@
 "use strict";
 var QueueScreenPage;
 (function (QueueScreenPage) {
-    const ready = HospitalAuth.guard("patient");
+    const ready = HospitalAuth.guard("screen");
+    if (ready)
+        document.documentElement.dataset.auth = "ok";
     const list = document.querySelector("#queue-list");
     const screen = document.querySelector("#queue-screen");
     const fullscreen = document.querySelector("#fullscreen-button");
