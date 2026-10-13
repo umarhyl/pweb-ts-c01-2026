@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ambil Antrian - Rumah Sakit</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/ambil-antrian.js" defer></script>
+</head>
+<body class="queue-take-page">
+  <nav class="public-nav" aria-label="Navigasi layanan publik">
+    <a class="public-nav-brand" href="ambil-antrian.html">C-01 <span>Rumah Sakit</span></a>
+    <div class="public-nav-links">
+      <a class="public-nav-link active" href="ambil-antrian.html">Ambil Nomor</a>
+      <a class="public-nav-link" href="layar.html">Layar Antrian</a>
+    </div>
+  </nav>
+  <main class="queue-take-layout">
+    <section class="queue-take-card" aria-labelledby="queue-title">
+      <header class="login-header">
+        <p class="login-brand">C-01 <span>/ Rumah Sakit</span></p>
+        <h1 id="queue-title">Ambil Antrian</h1>
+        <p class="subtitle">Pilih layanan dan prioritas untuk mendapatkan nomor antrian.</p>
+      </header>
+
+      <form id="queue-form">
+        <div class="input-group">
+          <label for="queue-type">Jenis layanan</label>
+          <select id="queue-type" required>
+            <option value="">Memuat layanan...</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="queue-priority">Prioritas</label>
+          <select id="queue-priority" required>
+            <option value="normal">Normal</option>
+            <option value="lansia">Lansia</option>
+            <option value="disabilitas">Disabilitas</option>
+            <option value="vip">VIP</option>
+          </select>
+        </div>
+
+        <p id="queue-error" class="error-msg" role="alert" aria-live="polite"></p>
+        <button id="queue-submit" class="login-btn" type="submit">Ambil Nomor <span>→</span></button>
+      </form>
+      <div class="take-help">
+        <span class="help-icon">i</span>
+        <p>Pastikan Anda memilih layanan yang sesuai. Nomor akan langsung masuk ke sistem antrian.</p>
+      </div>
+    </section>
+
+    <section id="ticket-result" class="ticket-result" aria-live="polite" hidden>
+      <p class="ticket-label">Nomor antrian Anda</p>
+      <strong id="ticket-number">-</strong>
+      <p id="ticket-detail"></p>
+      <p class="ticket-note">Silakan menunggu hingga nomor Anda dipanggil.</p>
+      <button id="take-another" class="outline-button" type="button">Ambil Antrian Lain</button>
+    </section>
+  </main>
+</body>
+</html>

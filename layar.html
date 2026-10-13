@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Layar informasi antrian Rumah Sakit">
+  <title>Layar Antrian - Rumah Sakit</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/layar.js" defer></script>
+</head>
+<body class="queue-screen-page">
+  <nav class="public-nav" aria-label="Navigasi layanan publik">
+    <a class="public-nav-brand" href="ambil-antrian.html">C-01 <span>Rumah Sakit</span></a>
+    <div class="public-nav-links">
+      <a class="public-nav-link" href="ambil-antrian.html">Ambil Nomor</a>
+      <a class="public-nav-link active" href="layar.html">Layar Antrian</a>
+    </div>
+  </nav>
+  <main class="queue-screen" id="queue-screen">
+    <header class="queue-screen-header">
+      <div>
+        <p class="login-brand">C-01 <span>/ Rumah Sakit</span></p>
+        <h1>Layar Antrian</h1>
+        <p class="queue-screen-subtitle">Nomor yang sedang dipanggil</p>
+      </div>
+      <div class="screen-actions">
+        <time id="screen-clock" aria-label="Waktu saat ini"></time>
+        <button id="fullscreen-button" class="screen-button" type="button">Layar Penuh</button>
+      </div>
+    </header>
+    <section id="queue-list" class="queue-list" aria-live="polite">
+      <div class="queue-empty">
+        <p>Belum ada jenis antrian aktif.</p>
+        <span>Data akan diperbarui otomatis.</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

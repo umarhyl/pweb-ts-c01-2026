@@ -1,0 +1,493 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  background-color: #f2f0e9;
+  color: #111111;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background-color: #f2f0e9;
+}
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px;
+  border: 1px solid #111111;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 4px 4px 0 #111111;
+}
+.login-header {
+  margin-bottom: 24px;
+}
+.login-brand {
+  margin-bottom: 4px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  font-weight: bold;
+}
+.login-brand span {
+  font-style: italic;
+  font-weight: normal;
+}
+.login-card h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  letter-spacing: -1px;
+}
+.login-card .subtitle {
+  margin-top: 8px;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+#login-form {
+  display: flex;
+  flex-direction: column;
+}
+.input-group {
+  margin-bottom: 16px;
+}
+.login-card label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.login-card input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #111111;
+  border-radius: 10px;
+  background-color: #f2f0e9;
+  font-size: 14px;
+  outline: none;
+}
+.login-card input:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 2px #d9f44d;
+}
+.error-msg {
+  min-height: 18px;
+  margin: 0 0 16px;
+  color: #cf1322;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #111111;
+  border-radius: 100px;
+  background-color: #d9f44d;
+  color: #111111;
+  font-weight: bold;
+  cursor: pointer;
+}
+.login-btn:hover:not(:disabled) {
+  background-color: #111111;
+  color: #ffffff;
+}
+.login-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.public-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: min(1180px, calc(100% - 48px));
+  margin: 24px auto 0;
+  padding: 6px;
+  border: 1px solid #cfd4dc;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(17, 17, 17, 0.06);
+}
+.public-nav-brand {
+  padding: 10px 14px;
+  color: #111111;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: bold;
+  text-decoration: none;
+}
+.public-nav-brand span {
+  color: #69665f;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+}
+.public-nav-links {
+  display: flex;
+  gap: 4px;
+}
+.public-nav-link {
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #46566c;
+  font-size: 14px;
+  text-decoration: none;
+}
+.public-nav-link:hover,
+.public-nav-link.active {
+  border-color: #cfd4dc;
+  background: #111111;
+  color: #ffffff;
+}
+
+.queue-take-page {
+  min-height: 100vh;
+  background-color: #f2f0e9;
+}
+.queue-take-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 460px) minmax(240px, 360px);
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  min-height: calc(100vh - 86px);
+  padding: 24px;
+}
+.queue-take-layout:has(#ticket-result[hidden]) {
+  grid-template-columns: minmax(280px, 460px);
+}
+.queue-take-card,
+.ticket-result {
+  width: 100%;
+  padding: 32px;
+  border: 1px solid #111111;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 4px 4px 0 #111111;
+}
+.queue-take-card h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32px;
+  letter-spacing: -1px;
+}
+.queue-take-card .subtitle {
+  margin-top: 8px;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+#queue-form {
+  display: flex;
+  flex-direction: column;
+}
+.queue-take-card select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #111111;
+  border-radius: 10px;
+  background-color: #f2f0e9;
+  font-size: 14px;
+  outline: none;
+}
+.queue-take-card select:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 2px #d9f44d;
+}
+.queue-take-card select:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+.ticket-result {
+  text-align: center;
+}
+.take-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f2f0e9;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.help-icon {
+  display: grid;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 50%;
+  background: #d9f44d;
+  color: #111111;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: bold;
+}
+.ticket-label {
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+#ticket-number {
+  display: block;
+  margin: 18px 0 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(58px, 10vw, 92px);
+  letter-spacing: 3px;
+}
+#ticket-detail {
+  margin-bottom: 24px;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+}
+.ticket-note {
+  margin: -10px 0 24px;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+}
+.outline-button {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #111111;
+  border-radius: 100px;
+  background-color: #ffffff;
+  color: #111111;
+  cursor: pointer;
+  font-weight: bold;
+}
+.outline-button:hover {
+  background-color: #111111;
+  color: #ffffff;
+}
+
+.queue-screen-page {
+  min-height: 100vh;
+  background-color: #f2f0e9;
+  color: #111111;
+}
+.queue-screen {
+  width: min(1320px, 100%);
+  min-height: calc(100vh - 86px);
+  margin: 0 auto;
+  padding: 24px;
+}
+.queue-screen-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px solid #111111;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 4px 4px 0 #111111;
+}
+.screen-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1180px;
+  margin: 18px auto 0;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #35a853;
+  box-shadow: 0 0 0 3px #d9f44d;
+}
+.status-separator {
+  color: #b5b1a7;
+}
+.queue-screen-header > div:first-child {
+  flex: 1;
+}
+.queue-screen-header {
+  padding-bottom: 32px;
+}
+.queue-screen-header .login-brand {
+  color: #111111;
+}
+.queue-screen-header h1 {
+  margin-top: 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 5vw, 64px);
+  letter-spacing: -2px;
+}
+.queue-screen-subtitle {
+  margin-top: 8px;
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+}
+.screen-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+#screen-clock {
+  color: #111111;
+  font-family: "Courier New", monospace;
+  font-size: 18px;
+  font-weight: bold;
+}
+.screen-button {
+  padding: 11px 16px;
+  border: 1px solid #111111;
+  border-radius: 100px;
+  background: #d9f44d;
+  color: #111111;
+  cursor: pointer;
+}
+.queue-screen:fullscreen {
+  overflow: auto;
+  background-color: #f2f0e9;
+}
+.screen-button:hover {
+  background: #111111;
+  color: #ffffff;
+}
+.queue-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: 32px;
+}
+.queue-card {
+  min-height: 300px;
+  padding: 26px;
+  border: 1px solid #111111;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #111111;
+}
+.queue-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.queue-code {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 50%;
+  background: #d9f44d;
+  color: #111111;
+  font-size: 22px;
+  font-weight: bold;
+}
+.queue-card h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+}
+.queue-card-heading p,
+.queue-card-footer {
+  color: #69665f;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+.queue-number {
+  margin: 34px 0;
+  color: #111111;
+  font-size: clamp(58px, 9vw, 100px);
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-align: center;
+}
+.queue-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid #111111;
+}
+.queue-card-footer strong {
+  color: #d9f44d;
+}
+.queue-empty {
+  grid-column: 1 / -1;
+  padding: 72px 20px;
+  border: 1px dashed #69665f;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #69665f;
+  text-align: center;
+}
+.queue-empty p {
+  margin-bottom: 8px;
+  color: #111111;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+}
+.queue-empty span {
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .public-nav {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 4px;
+    width: calc(100% - 32px);
+    margin-top: 16px;
+  }
+  .public-nav-brand {
+    text-align: center;
+  }
+  .public-nav-links {
+    justify-content: stretch;
+  }
+  .public-nav-link {
+    flex: 1;
+    padding: 9px 6px;
+    text-align: center;
+  }
+  .queue-take-layout {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  .queue-screen-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .screen-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
