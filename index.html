@@ -1,17 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Selamat datang di Rumah Sakit kami. Temukan layanan kesehatan terbaik untuk Anda dan keluarga.">
-  <title>RS - Rumah Sakit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Admin | RS C-01</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/xp.css">
   <script src="js/auth.js" defer></script>
+  <script src="js/queue-core.js" defer></script>
+  <script src="js/admin.js" defer></script>
 </head>
-
-<body>
-  <header>
-    <h1>Rumah Sakit</h1>
+<body class="xp-page dashboard-page" data-protected>
+  <a class="skip-link" href="#main">Lewati navigasi</a>
+  <header class="xp-shell xp-topbar">
+    <a class="xp-brand" href="index.html"><span class="xp-logo">✚</span> RS C-01 <small>Dashboard Admin</small></a>
+    <nav class="xp-nav" aria-label="Navigasi admin">
+      <a href="index.html" aria-current="page">Dashboard</a>
+      <a href="operator.html">Operator</a>
+      <a href="layar.html">Layar</a>
+      <span class="staff-identity" data-greeting></span>
+      <button type="button" data-logout>Keluar</button>
+    </nav>
   </header>
+  <main id="main" class="xp-shell staff-main">
+    <div class="staff-heading">
+      <div>
+        <p class="xp-eyebrow">ADMINISTRASI / HARI INI</p>
+        <h1>Dashboard Admin</h1>
+        <p id="today-label"></p>
+      </div>
+      <div class="heading-actions">
+        <button class="xp-button" id="download-csv" type="button">↓ Unduh CSV</button>
+        <button class="xp-button xp-danger" id="reset-queue" type="button">Reset Antrean</button>
+      </div>
+    </div>
+    <p id="admin-message" class="xp-message" role="status" aria-live="polite"></p>
+    <section class="stats-grid" aria-label="Statistik antrean hari ini">
+      <div class="xp-window stat"><div class="xp-titlebar">Total Tiket</div><div class="xp-window-body"><strong id="stat-total">0</strong><span>tiket terdaftar</span></div></div>
+      <div class="xp-window stat"><div class="xp-titlebar">Menunggu</div><div class="xp-window-body"><strong id="stat-waiting">0</strong><span>pasien dalam antrean</span></div></div>
+      <div class="xp-window stat"><div class="xp-titlebar">Dipanggil</div><div class="xp-window-body"><strong id="stat-called">0</strong><span>sedang dilayani</span></div></div>
+      <div class="xp-window stat"><div class="xp-titlebar">Selesai</div><div class="xp-window-body"><strong id="stat-done">0</strong><span>telah selesai</span></div></div>
+    </section>
+    <section id="queue-alert" class="xp-alert" role="status" aria-live="polite" hidden></section>
+    <div class="staff-grid">
+      <section class="xp-window" aria-labelledby="service-title"><div class="xp-titlebar">Jenis Antrean</div><div class="xp-window-body"><h2 id="service-title">Kelola layanan</h2><p class="section-note">Kode satu huruf. Kode dan nama yang sama tidak dapat didaftarkan dua kali.</p>
+        <form id="service-form" class="xp-form">
+          <label for="service-code">Kode poli</label><input id="service-code" maxlength="1" pattern="[A-Za-z]" placeholder="D" required>
+          <label for="service-name">Nama layanan</label><input id="service-name" maxlength="60" placeholder="Poli Anak" required>
+          <label for="avg-minutes">Rata-rata pelayanan (menit)</label><input id="avg-minutes" type="number" min="1" max="120" value="10" required>
+          <label class="check-row"><input id="service-active" type="checkbox" checked> Poli aktif</label>
+          <div class="heading-actions"><button class="xp-button xp-primary" type="submit">Simpan Layanan</button><button class="xp-button" id="cancel-edit" type="button" hidden>Batal Ubah</button></div>
+        </form>
+      </div></section>
+      <section class="xp-window" aria-labelledby="list-title"><div class="xp-titlebar">Status Poli</div><div class="xp-window-body"><h2 id="list-title">Daftar layanan</h2><p class="section-note">Peringatan muncul jika 5 pasien atau lebih menunggu pada satu poli.</p><div id="service-list" class="service-list"></div></div></section>
+    </div>
+    <div class="staff-grid admin-lower">
+      <section class="xp-window" aria-labelledby="manual-title"><div class="xp-titlebar">Terbitkan Tiket Manual</div><div class="xp-window-body"><h2 id="manual-title">Pasien tanpa ponsel</h2><p class="section-note">Pilih poli aktif dan prioritas. Nomor langsung dibuat dan tampil di daftar tiket, panel operator, serta layar antrean.</p><form id="manual-form" class="xp-form manual-form"><div><label for="manual-service">Jenis antrean</label><select id="manual-service" required></select></div><div><label for="manual-priority">Prioritas</label><select id="manual-priority"><option value="normal">Normal</option><option value="lansia">Lansia</option><option value="disabilitas">Disabilitas</option><option value="vip">VIP</option></select></div><button class="xp-button xp-primary" type="submit">Terbitkan Tiket</button></form><p id="manual-estimate" class="estimate-preview" role="status" aria-live="polite">Pilih poli untuk melihat perkiraan antrean.</p></div></section>
+      <section class="xp-window" aria-labelledby="ticket-list-title"><div class="xp-titlebar">Antrean Hari Ini</div><div class="xp-window-body"><h2 id="ticket-list-title">Semua tiket</h2><p class="section-note">Tiket dari pasien dan admin tampil di sini secara otomatis.</p><div id="admin-ticket-list" class="admin-ticket-list"></div></div></section>
+    </div>
+  </main>
+  <footer class="xp-taskbar">
+    <a class="xp-start-button" href="beranda.html" aria-label="Start - Beranda Publik">
+      <span class="xp-start-icon" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>Start</span>
+    </a>
+    <nav class="xp-taskbar-links" aria-label="Pindah halaman">
+      <a class="xp-taskbar-link active" href="index.html" aria-current="page">
+        <img src="assets/admin.svg" alt="">
+        <span>Admin</span>
+      </a>
+      <a class="xp-taskbar-link" href="beranda.html">
+        <img src="assets/public.avif" alt="">
+        <span>Public</span>
+      </a>
+    </nav>
+    <span class="xp-taskbar-clock">Administrator · <time id="footer-clock"></time></span>
+  </footer>
 </body>
 </html>

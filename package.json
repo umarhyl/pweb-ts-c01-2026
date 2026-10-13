@@ -1,0 +1,13 @@
+{
+  "name": "pweb-ts-c01-2026",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "node tests/queue-core.cjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

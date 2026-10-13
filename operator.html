@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel Operator | RS C-01</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/xp.css">
+  <script src="js/auth.js" defer></script>
+  <script src="js/queue-core.js" defer></script>
+  <script src="js/operator.js" defer></script>
+</head>
+<body class="xp-page operator-page" data-protected>
+  <a class="skip-link" href="#main">Lewati navigasi</a>
+  <header class="xp-shell xp-topbar">
+    <a class="xp-brand" href="operator.html"><span class="xp-logo">✚</span> RS C-01 <small>Panel Operator</small></a>
+    <nav class="xp-nav" aria-label="Navigasi operator">
+      <a href="index.html" data-admin-link>Dashboard</a>
+      <a href="operator.html" aria-current="page">Operator</a>
+      <a href="layar.html">Layar</a>
+      <span class="staff-identity" data-greeting></span>
+      <button type="button" data-logout>Keluar</button>
+    </nav>
+  </header>
+  <main id="main" class="xp-shell staff-main">
+    <div class="staff-heading">
+      <div>
+        <p class="xp-eyebrow">LOKET PELAYANAN / HARI INI</p>
+        <h1>Panel Operator</h1>
+        <p>Urutan: VIP → Disabilitas → Lansia → Normal; nomor lebih awal didahulukan dalam prioritas yang sama.</p>
+      </div>
+      <div class="heading-actions">
+        <label class="check-row voice-toggle"><input id="voice-enabled" type="checkbox" checked> Suara aktif</label>
+        <button class="xp-button" id="test-voice" type="button">Uji Suara</button>
+      </div>
+    </div>
+    <p id="operator-message" class="xp-message" role="status" aria-live="polite"></p>
+    <section id="operator-cards" class="operator-cards" aria-label="Panel penganggilan tiap layanan"></section>
+    <p class="section-note operator-help">Panggil Berikutnya otomatis menyelesaikan nomor sebelumnya. Lewati menandai pasien tidak hadir; nomor itu tidak dipanggil lagi sampai petugas menekan Kembalikan ke Antrean. Suara terdengar dari perangkat operator setelah tombol ditekan.</p>
+  </main>
+  <footer class="xp-taskbar">
+    <span>✚ &nbsp; RS C-01</span>
+    <span>Operator · <time id="footer-clock"></time></span>
+  </footer>
+</body>
+</html>

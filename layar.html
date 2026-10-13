@@ -6,12 +6,15 @@
   <meta name="description" content="Layar informasi antrian Rumah Sakit">
   <title>Layar Antrian - Rumah Sakit</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/xp.css">
+  <script src="js/queue-core.js" defer></script>
   <script src="js/layar.js" defer></script>
 </head>
-<body class="queue-screen-page">
+<body class="queue-screen-page xp-page">
   <nav class="public-nav" aria-label="Navigasi layanan publik">
-    <a class="public-nav-brand" href="ambil-antrian.html">C-01 <span>Rumah Sakit</span></a>
+    <a class="public-nav-brand" href="beranda.html">✚ C-01 <span>Rumah Sakit</span></a>
     <div class="public-nav-links">
+      <a class="public-nav-link" href="beranda.html">Beranda</a>
       <a class="public-nav-link" href="ambil-antrian.html">Ambil Nomor</a>
       <a class="public-nav-link active" href="layar.html">Layar Antrian</a>
     </div>
@@ -25,9 +28,11 @@
       </div>
       <div class="screen-actions">
         <time id="screen-clock" aria-label="Waktu saat ini"></time>
+        <button id="screen-voice" class="screen-button" type="button">Aktifkan Suara</button>
         <button id="fullscreen-button" class="screen-button" type="button">Layar Penuh</button>
       </div>
     </header>
+    <p id="screen-voice-status" class="screen-voice-status" role="status" aria-live="polite">Suara layar belum aktif. Klik Aktifkan Suara agar panggilan berikutnya terdengar di perangkat ini.</p>
     <section id="queue-list" class="queue-list" aria-live="polite">
       <div class="queue-empty">
         <p>Belum ada jenis antrian aktif.</p>

@@ -1,9 +1,5 @@
-interface LoginResponse {
-  accessToken?: string;
-  token?: string;
-  id?: number;
-  firstName?: string;
-  role?: string;
+function isLoginRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 const loginForm = document.querySelector<HTMLFormElement>("#login-form");
@@ -43,7 +39,7 @@ if (loginForm && loginButton && errorMessage && usernameInput && passwordInput) 
         })
       });
 
-      if (response.status === 401) {
+      if (response.status === 400 || response.status === 401) {
         throw new Error("INVALID_CREDENTIALS");
       }
 
@@ -51,21 +47,25 @@ if (loginForm && loginButton && errorMessage && usernameInput && passwordInput) 
         throw new Error("SERVER_ERROR");
       }
 
-      const data = (await response.json()) as LoginResponse;
-      const token = data.accessToken ?? data.token;
+      const data: unknown = await response.json();
+      if (!isLoginRecord(data)) throw new Error("INVALID_RESPONSE");
+      const token = typeof data.accessToken === "string" ? data.accessToken
+        : typeof data.token === "string" ? data.token : "";
+      const firstName = typeof data.firstName === "string" ? data.firstName : "";
+      const id = typeof data.id === "number" && Number.isSafeInteger(data.id) ? data.id : 0;
 
-      if (!token || !data.firstName || !data.id) {
+      if (!token || !firstName || !id) {
         throw new Error("INVALID_RESPONSE");
       }
 
-      let role = data.role;
+      let role = typeof data.role === "string" ? data.role : "";
       if (!role) {
-        const userResponse = await fetch(`https://dummyjson.com/users/${data.id}`);
+        const userResponse = await fetch(`https://dummyjson.com/users/${id}`);
         if (!userResponse.ok) {
           throw new Error("SERVER_ERROR");
         }
-        const userData = (await userResponse.json()) as LoginResponse;
-        role = userData.role;
+        const userData: unknown = await userResponse.json();
+        role = isLoginRecord(userData) && typeof userData.role === "string" ? userData.role : "";
       }
 
       if (!role) {
@@ -73,13 +73,15 @@ if (loginForm && loginButton && errorMessage && usernameInput && passwordInput) 
       }
 
       role = role.toLowerCase();
+      if (role !== "admin" && role !== "moderator" && role !== "user") {
+        throw new Error("INVALID_RESPONSE");
+      }
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-      localStorage.setItem("firstName", data.firstName);
+      localStorage.setItem("firstName", firstName);
 
       const destination = role === "admin" || role === "moderator"
-        ? "index.html"
-        : "ambil-antrian.html";
+        ? "index.html" : "operator.html";
       window.location.href = destination;
     } catch (error) {
       const errorCode = error instanceof Error ? error.message : "";

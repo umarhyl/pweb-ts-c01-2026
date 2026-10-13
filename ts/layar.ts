@@ -1,157 +1,113 @@
-interface QueueType {
-  code?: string;
-  name?: string;
-  nama?: string;
-  active?: boolean;
-  aktif?: boolean;
-  isActive?: boolean;
-}
+namespace QueueScreenPage {
+  const list = document.querySelector<HTMLElement>("#queue-list");
+  const screen = document.querySelector<HTMLElement>("#queue-screen");
+  const fullscreen = document.querySelector<HTMLButtonElement>("#fullscreen-button");
+  const voiceButton = document.querySelector<HTMLButtonElement>("#screen-voice");
+  const voiceStatus = document.querySelector<HTMLElement>("#screen-voice-status");
+  let voiceEnabled = false;
+  const lastSpoken = new Map<string, string>();
 
-interface QueueTicket {
-  number?: string | number;
-  ticketNumber?: string | number;
-  nomor?: string | number;
-  queueCode?: string;
-  typeCode?: string;
-  kode?: string;
-  status?: string;
-}
-
-const queueList = document.querySelector<HTMLElement>("#queue-list");
-const queueScreen = document.querySelector<HTMLElement>("#queue-screen");
-const fullscreenButton = document.querySelector<HTMLButtonElement>("#fullscreen-button");
-const screenClock = document.querySelector<HTMLElement>("#screen-clock");
-
-const queueTypeKeys = ["queueTypes", "jenisAntrian"];
-const ticketKeys = ["queueTickets", "tiketAntrian"];
-
-function readStorage<T>(keys: string[]): T[] {
-  for (const key of keys) {
-    const storedValue = localStorage.getItem(key);
-    if (!storedValue) {
-      continue;
+  function announce(ticket: HospitalQueue.Ticket, service: HospitalQueue.Service): void {
+    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      if (voiceStatus) voiceStatus.textContent = "Browser ini tidak mendukung suara otomatis.";
+      return;
     }
+    const utterance = new SpeechSynthesisUtterance(`Nomor antrean ${ticket.queueCode}, ${ticket.number}. Silakan menuju ${service.name}.`);
+    utterance.lang = "id-ID";
+    utterance.rate = 0.85;
+    utterance.onerror = () => { if (voiceStatus) voiceStatus.textContent = "Suara gagal diputar. Periksa speaker atau gunakan panel operator."; };
+    window.speechSynthesis.speak(utterance);
+    if (voiceStatus) voiceStatus.textContent = `🔊 Memutar panggilan ${ticket.ticketNumber}.`;
+  }
 
-    try {
-      const parsedValue: unknown = JSON.parse(storedValue);
-      if (Array.isArray(parsedValue)) {
-        return parsedValue as T[];
+  function render(): void {
+    if (!list) return;
+    list.replaceChildren();
+    const services = HospitalQueue.services().filter((service) => service.active
+      || HospitalQueue.todayTickets(service.code).some((ticket) => ticket.status === "waiting" || ticket.status === "called"));
+    if (services.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "queue-empty";
+      empty.textContent = "Belum ada jenis antrean aktif.";
+      list.append(empty);
+      return;
+    }
+    for (const service of services) {
+      const called = HospitalQueue.currentCalled(service.code);
+      if (called && voiceEnabled) {
+        const signature = `${called.id}:${called.callCount}`;
+        if (lastSpoken.get(service.code) !== signature) {
+          lastSpoken.set(service.code, signature);
+          announce(called, service);
+        }
       }
+      const waiting = HospitalQueue.waitingTickets(service.code);
+      const next = waiting[0];
+      const card = document.createElement("article");
+      card.className = "queue-card";
+      const heading = document.createElement("div");
+      heading.className = "queue-card-heading";
+      const code = document.createElement("span");
+      code.className = "queue-code";
+      code.textContent = service.code;
+      const title = document.createElement("div");
+      const name = document.createElement("h2");
+      name.textContent = service.name;
+      const subtitle = document.createElement("p");
+      subtitle.textContent = service.active ? "Layanan aktif" : "Tiket baru ditutup; antrean lama tetap diproses";
+      title.append(name, subtitle);
+      heading.append(code, title);
+      const number = document.createElement("div");
+      number.className = called ? "queue-number" : "queue-number queue-number-empty";
+      number.textContent = called?.ticketNumber ?? "Belum ada nomor dipanggil";
+      const nextCall = document.createElement("div");
+      nextCall.className = "queue-next";
+      const nextLabel = document.createElement("span");
+      nextLabel.textContent = "PANGGILAN BERIKUTNYA";
+      const nextNumber = document.createElement("strong");
+      nextNumber.textContent = next?.ticketNumber ?? "Belum ada";
+      nextCall.append(nextLabel, nextNumber);
+      const footer = document.createElement("div");
+      footer.className = "queue-card-footer";
+      const state = document.createElement("span");
+      state.textContent = called ? "● DIPANGGIL" : "Nomor muncul setelah operator memanggil";
+      const count = document.createElement("span");
+      count.textContent = `${waiting.length} pasien menunggu`;
+      footer.append(state, count);
+      card.append(heading, number, nextCall, footer);
+      list.append(card);
+    }
+  }
+
+  function clock(): void {
+    const element = document.getElementById("screen-clock");
+    if (element) element.textContent = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  }
+
+  fullscreen?.addEventListener("click", async () => {
+    try {
+      if (!document.fullscreenElement) await screen?.requestFullscreen();
+      else await document.exitFullscreen();
     } catch {
-      // Ignore malformed data and try the next supported storage key.
+      fullscreen.textContent = "Layar penuh tidak tersedia";
     }
-  }
-
-  return [];
-}
-
-function isActiveQueue(queueType: QueueType): boolean {
-  return queueType.active ?? queueType.aktif ?? queueType.isActive ?? true;
-}
-
-function getTicketCode(ticket: QueueTicket): string {
-  return (ticket.queueCode ?? ticket.typeCode ?? ticket.kode ?? "").toUpperCase();
-}
-
-function getTicketNumber(ticket: QueueTicket): string {
-  const number = ticket.number ?? ticket.ticketNumber ?? ticket.nomor ?? "-";
-  return String(number);
-}
-
-function isCalled(status: string | undefined): boolean {
-  const normalizedStatus = (status ?? "").toLowerCase();
-  return normalizedStatus === "called" || normalizedStatus === "dipanggil";
-}
-
-function isWaiting(status: string | undefined): boolean {
-  const normalizedStatus = (status ?? "").toLowerCase();
-  return normalizedStatus === "waiting"
-    || normalizedStatus === "menunggu"
-    || normalizedStatus === "pending"
-    || normalizedStatus === "queued"
-    || normalizedStatus === "antri";
-}
-
-function renderQueueScreen(): void {
-  if (!queueList) {
-    return;
-  }
-
-  const queueTypes = readStorage<QueueType>(queueTypeKeys)
-    .filter(isActiveQueue)
-    .filter((queueType) => queueType.code);
-  const tickets = readStorage<QueueTicket>(ticketKeys);
-
-  if (queueTypes.length === 0) {
-    queueList.innerHTML = `
-      <div class="queue-empty">
-        <p>Belum ada jenis antrian aktif.</p>
-        <span>Data akan diperbarui otomatis.</span>
-      </div>
-    `;
-    return;
-  }
-
-  queueList.innerHTML = queueTypes.map((queueType) => {
-    const code = queueType.code!.toUpperCase();
-    const queueTickets = tickets.filter((ticket) => getTicketCode(ticket) === code);
-    const calledTicket = queueTickets.find((ticket) => isCalled(ticket.status));
-    const waitingCount = queueTickets.filter((ticket) => isWaiting(ticket.status)).length;
-    const calledNumber = calledTicket ? getTicketNumber(calledTicket) : "---";
-    const queueName = queueType.name ?? queueType.nama ?? "Layanan";
-
-    return `
-      <article class="queue-card">
-        <div class="queue-card-heading">
-          <span class="queue-code">${code}</span>
-          <div>
-            <h2>${queueName}</h2>
-            <p>Loket pelayanan</p>
-          </div>
-        </div>
-        <div class="queue-number">${calledNumber}</div>
-        <div class="queue-card-footer">
-          <span>Status: <strong>${calledTicket ? "Dipanggil" : "Menunggu"}</strong></span>
-          <span>Sisa antrian <strong>${waitingCount}</strong></span>
-        </div>
-      </article>
-    `;
-  }).join("");
-}
-
-function updateClock(): void {
-  if (!screenClock) {
-    return;
-  }
-
-  screenClock.textContent = new Date().toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
   });
+  voiceButton?.addEventListener("click", () => {
+    voiceEnabled = !voiceEnabled;
+    voiceButton.textContent = voiceEnabled ? "Matikan Suara" : "Aktifkan Suara";
+    if (voiceStatus) voiceStatus.textContent = voiceEnabled
+      ? "Suara aktif di perangkat ini. Panggilan baru akan dibacakan."
+      : "Suara layar dimatikan.";
+    if (!voiceEnabled && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    if (voiceEnabled) render();
+  });
+  document.addEventListener("fullscreenchange", () => {
+    if (fullscreen) fullscreen.textContent = document.fullscreenElement ? "Keluar Layar Penuh" : "Layar Penuh";
+  });
+  render();
+  clock();
+  window.addEventListener("storage", render);
+  window.addEventListener("hospital-queue-change", render);
+  window.setInterval(render, 2500);
+  window.setInterval(clock, 1000);
 }
-
-fullscreenButton?.addEventListener("click", async () => {
-  try {
-    if (!document.fullscreenElement) {
-      await queueScreen?.requestFullscreen();
-      fullscreenButton.textContent = "Keluar Layar Penuh";
-    } else {
-      await document.exitFullscreen();
-      fullscreenButton.textContent = "Layar Penuh";
-    }
-  } catch {
-    fullscreenButton.textContent = "Fullscreen tidak tersedia";
-  }
-});
-
-document.addEventListener("fullscreenchange", () => {
-  if (fullscreenButton && !document.fullscreenElement) {
-    fullscreenButton.textContent = "Layar Penuh";
-  }
-});
-
-renderQueueScreen();
-updateClock();
-window.setInterval(renderQueueScreen, 2500);
-window.setInterval(updateClock, 1000);

@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ambil Antrian - Rumah Sakit</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/xp.css">
+  <script src="js/queue-core.js" defer></script>
   <script src="js/ambil-antrian.js" defer></script>
 </head>
-<body class="queue-take-page">
+<body class="queue-take-page xp-page">
   <nav class="public-nav" aria-label="Navigasi layanan publik">
-    <a class="public-nav-brand" href="ambil-antrian.html">C-01 <span>Rumah Sakit</span></a>
+    <a class="public-nav-brand" href="beranda.html">✚ C-01 <span>Rumah Sakit</span></a>
     <div class="public-nav-links">
+      <a class="public-nav-link" href="beranda.html">Beranda</a>
       <a class="public-nav-link active" href="ambil-antrian.html">Ambil Nomor</a>
       <a class="public-nav-link" href="layar.html">Layar Antrian</a>
     </div>
@@ -20,8 +23,9 @@
       <header class="login-header">
         <p class="login-brand">C-01 <span>/ Rumah Sakit</span></p>
         <h1 id="queue-title">Ambil Antrian</h1>
-        <p class="subtitle">Pilih layanan dan prioritas untuk mendapatkan nomor antrian.</p>
+        <p class="subtitle">Pilih poli aktif dan prioritas. Nomor dapat diambil kapan saja selama poli diaktifkan admin.</p>
       </header>
+      <div id="service-cards" class="patient-service-grid" aria-label="Pilihan layanan"></div>
 
       <form id="queue-form">
         <div class="input-group">
@@ -41,12 +45,14 @@
           </select>
         </div>
 
+        <p id="queue-estimate-preview" class="estimate-preview" role="status" aria-live="polite">Pilih poli untuk melihat perkiraan waktu dilayani.</p>
+
         <p id="queue-error" class="error-msg" role="alert" aria-live="polite"></p>
         <button id="queue-submit" class="login-btn" type="submit">Ambil Nomor <span>→</span></button>
       </form>
       <div class="take-help">
         <span class="help-icon">i</span>
-        <p>Pastikan Anda memilih layanan yang sesuai. Nomor akan langsung masuk ke sistem antrian.</p>
+        <p id="service-hours">Pilih satu poli aktif untuk melihat antreannya.</p>
       </div>
     </section>
 
@@ -54,7 +60,11 @@
       <p class="ticket-label">Nomor antrian Anda</p>
       <strong id="ticket-number">-</strong>
       <p id="ticket-detail"></p>
-      <p class="ticket-note">Silakan menunggu hingga nomor Anda dipanggil.</p>
+      <p id="ticket-status" class="ticket-note"></p>
+      <p id="ticket-estimate" class="ticket-note"></p>
+      <p id="ticket-alert" class="patient-alert" role="status" aria-live="polite" hidden></p>
+      <p class="ticket-note">Simpan atau cetak tiket ini. Pantau layar antrean untuk nomor yang sedang dipanggil.</p>
+      <button id="print-ticket" class="outline-button" type="button">Cetak / Simpan PDF Tiket</button>
       <button id="take-another" class="outline-button" type="button">Ambil Antrian Lain</button>
     </section>
   </main>

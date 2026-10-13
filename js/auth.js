@@ -1,20 +1,42 @@
-const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
-const firstName = localStorage.getItem("firstName");
-const greetingElement = document.getElementById("greeting");
-const logoutButton = document.getElementById("logout-btn");
-if (!token || !firstName || (role !== "admin" && role !== "moderator")) {
-    window.location.href = "login.html";
-}
-else if (greetingElement) {
-    greetingElement.textContent = `Halo, ${firstName}`;
-}
-if (logoutButton) {
-    logoutButton.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("firstName");
-        localStorage.removeItem("cart");
-        window.location.href = "login.html";
-    });
-}
+"use strict";
+var HospitalAuth;
+(function (HospitalAuth) {
+    function guard(page) {
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
+        const firstName = localStorage.getItem("firstName");
+        const validRole = role === "admin" || role === "moderator" || role === "user";
+        if (!token || !firstName || !validRole || (page === "dashboard" && role === "user")) {
+            window.location.replace("login.html");
+            return false;
+        }
+        document.querySelectorAll("[data-greeting]").forEach((item) => {
+            item.textContent = `${firstName} · ${role === "moderator" ? "Moderator" : role === "admin" ? "Admin" : "User"}`;
+        });
+        if (role === "user")
+            document.querySelectorAll("[data-admin-link]").forEach((item) => { item.hidden = true; });
+        window.addEventListener("storage", (event) => {
+            if (event.key !== "token" && event.key !== "role" && event.key !== "firstName" && event.key !== null)
+                return;
+            const currentRole = localStorage.getItem("role");
+            if (!localStorage.getItem("token") || !localStorage.getItem("firstName")
+                || (currentRole !== "admin" && currentRole !== "moderator" && currentRole !== "user")
+                || (page === "dashboard" && currentRole === "user")) {
+                window.location.replace("login.html");
+            }
+        });
+        return true;
+    }
+    HospitalAuth.guard = guard;
+    function bindLogout() {
+        document.querySelectorAll("[data-logout]").forEach((button) => {
+            button.addEventListener("click", () => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                localStorage.removeItem("firstName");
+                window.location.replace("login.html");
+            });
+        });
+    }
+    HospitalAuth.bindLogout = bindLogout;
+})(HospitalAuth || (HospitalAuth = {}));
